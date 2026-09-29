@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>slopfest-haiku demo</title>
+    <style>
+      body { font: 18px/1.5 ui-serif, Georgia, serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; background: #111; color: #eee; }
+      slop-fest { margin: 2rem 0; padding: 1.5rem; border: 1px solid #444; border-radius: 8px; cursor: pointer; }
+      .slop-title { font-weight: bold; font-size: 1.3em; margin-bottom: 0.75em; }
+      slop-fest[data-form='commit'] { font-family: ui-monospace, monospace; font-size: 0.9em; }
+      code { color: #9f9; }
+    </style>
+  </head>
+  <body>
+    <h1>slopfest-haiku</h1>
+    <p>Jede Box ist ein <code>&lt;slop-fest&gt;</code>-Element. Klicken = neues Werk.</p>
+
+    <slop-fest form="manifesto" interval="30" clickable></slop-fest>
+    <slop-fest form="haiku" themes="glitch night-shift coffee" interval="6" clickable></slop-fest>
+    <slop-fest lang="en" form="koan" interval="8" clickable></slop-fest>
+    <slop-fest form="commit" clickable></slop-fest>
+    <slop-fest lang="en" form="random" interval="5" clickable></slop-fest>
+
+    <script type="module">
+      import '../dist/element.js'
+    </script>
+  </body>
+</html>

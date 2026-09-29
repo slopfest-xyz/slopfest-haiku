@@ -1,0 +1,69 @@
+{
+  "name": "@slopfest-xyz/slopfest-haiku",
+  "version": "0.1.0",
+  "description": "Generative Slopfest manifestos, haikus and litanies (DE/EN) – different on every reload.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Harald Schilly",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slopfest-xyz/slopfest-haiku.git"
+  },
+  "homepage": "https://slopfest.xyz",
+  "keywords": [
+    "slopfest",
+    "generative",
+    "poetry",
+    "haiku",
+    "manifesto",
+    "custom-element"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./element": {
+      "types": "./dist/element.d.ts",
+      "import": "./dist/element.js"
+    },
+    "./lang/de": {
+      "types": "./dist/lang/de.d.ts",
+      "import": "./dist/lang/de.js"
+    },
+    "./lang/en": {
+      "types": "./dist/lang/en.d.ts",
+      "import": "./dist/lang/en.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./dist/element.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sample": "pnpm build && node scripts/sample.mjs",
+    "demo": "pnpm build && node scripts/serve.mjs",
+    "prepack": "pnpm clean && pnpm build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@12.5.1",
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}

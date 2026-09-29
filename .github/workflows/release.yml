@@ -1,0 +1,55 @@
+name: Release
+
+# Triggered by pushing a version tag, e.g.:  pnpm version patch && git push --follow-tags
+# Publishes to npmjs.com via Trusted Publishing (OIDC) — no npm token secret needed.
+# The trusted publisher (this repo + release.yml) must be configured once in the
+# package settings on npmjs.com.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write # GitHub Release
+  id-token: write # npm Trusted Publishing (OIDC) + provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # GitHub environment "npm" only allows deployments from v* tags; the npm trusted
+    # publisher is bound to this repo + release.yml + environment "npm".
+    environment: npm
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+
+      - name: Tag must match package.json version
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json $version"
+            exit 1
+          fi
+
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm pack # runs prepack → clean + build
+
+      - name: Publish to npmjs.com
+        run: |
+          # prereleases (v1.2.0-rc.1) go to dist-tag "next", everything else to "latest"
+          case "$GITHUB_REF_NAME" in *-*) tag=next ;; *) tag=latest ;; esac
+          npm publish ./*.tgz --access public --tag "$tag"
+
+      - name: Create GitHub Release
+        run: |
+          flags="--generate-notes"
+          case "$GITHUB_REF_NAME" in *-*) flags="$flags --prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" *.tgz $flags
+        env:
+          GH_TOKEN: ${{ github.token }}
