@@ -10,6 +10,12 @@
       .slop-title { font-weight: bold; font-size: 1.3em; margin-bottom: 0.75em; }
       slop-fest[data-form='commit'] { font-family: ui-monospace, monospace; font-size: 0.9em; }
       code { color: #9f9; }
+      .slop-cta { display: inline-block; padding: 0.6em 1.2em; background: #9f9; color: #111; border-radius: 6px; text-decoration: none; font-weight: bold; }
+      .slop-hint { font-size: 0.8em; opacity: 0.7; margin-top: 0.5em; }
+      .slop-slot { display: grid; grid-template-columns: 4em 1fr; column-gap: 0.5em; margin: 0.4em 0; }
+      .slop-clock { grid-row: span 2; font-family: ui-monospace, monospace; }
+      .slop-session { font-weight: bold; }
+      .slop-desc { opacity: 0.8; }
     </style>
   </head>
   <body>
@@ -21,6 +27,15 @@
     <slop-fest lang="en" form="koan" interval="8" clickable></slop-fest>
     <slop-fest form="commit" clickable></slop-fest>
     <slop-fest lang="en" form="random" interval="5" clickable></slop-fest>
+
+    <h2>Event-Bausteine</h2>
+    <slop-fest kind="when-where" start="2026-11-14T19:00" end="2026-11-15T01:00" venue="Fluc"
+      address="Praterstern 5, 1020 Wien" city="Wien" interval="7" clickable></slop-fest>
+    <slop-fest kind="cta" start="2026-11-14T19:00" venue="Fluc" href="https://example.com/tickets" interval="5" clickable></slop-fest>
+    <slop-fest kind="teaser" start="2026-11-14T19:00" venue="Fluc" city="Wien" clickable></slop-fest>
+    <slop-fest kind="schedule" start="2026-11-14T19:00" venue="Fluc" clickable
+      schedule='[{"time":"19:00","title":"Einlass"},{"time":"20:00"},{"time":"21:30"},{"time":"23:00","title":"Afterparty"}]'></slop-fest>
+    <slop-fest lang="en" kind="when-where" start="2026-11-14T19:00" venue="Fluc" city="Vienna" clickable></slop-fest>
 
     <script type="module">
       import '../dist/element.js'

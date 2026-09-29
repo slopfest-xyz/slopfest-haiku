@@ -646,4 +646,69 @@ export const en: LangPack = {
       { lines: ['revert: "{claim}"'] },
     ],
   },
+
+  // Event building blocks. {venue} is used as a bare name (after "at", colons, appositions).
+  event: {
+    whenwhere: [
+      '{name}: {date}, {clock} – {venue}. {adj:c} {n} are already there.',
+      'When: {date}, from {clock}. Where: {venue}. Why: {claim}',
+      'Save the date: {day}. From {clock}, {adj} {n} {v} at {venue}.',
+      'Meet us at {venue}, {address}, on {date} at {clock}. Bring {adj} {n}.',
+      '{name} happens on {day} in {city}. Doors at {clock}, {venue}. {core}',
+      'From {clock} to {until}, {adj} {n} {v} at {venue} – {date}.',
+      "{date}. {venue}. {adj:c} {n}. That's all you need to know.",
+      'On {day}, {venue} turns into a place where {n} {v}.',
+      '{name} on {day}, {venue}: {core}',
+      'Mark your calendar: {weekday}, {day}. Venue: {venue}. {claim}',
+    ],
+    cta: [
+      'Get your ticket', 'Register now', "I'm in", 'Reserve a spot', 'Generate my ticket',
+      'Commit to attend', 'Load me into the context', 'Yes, I want slop', 'git checkout ticket',
+      'Prompt my way in',
+    ],
+    ctahint: [
+      'Checkout happens elsewhere – and it is definitely not generated.',
+      "You'll briefly leave latent space and land in the ticket shop.",
+      'On to the ticket shop. A real one, not a hallucinated one.',
+      'Seats are finite. Slop is not.',
+      "{date}, {venue}. We'll save you a seat in the context window.",
+      'The link opens the external ticket shop – no prompt required.',
+    ],
+    teaser: [
+      {
+        lines: [
+          '{name} is an evening for everyone who likes to {vt} {n}. {core}',
+          "On {day}, from {clock}, we'll show you in {city} what happens when {n} {v}. Free entry for {adj} {n}; everyone else needs a ticket.",
+        ],
+      },
+      {
+        lines: [
+          'No talk, no keynote, no pitch. Instead: {adj} {n}, {adj} {n} and {n} that {v} {place}.',
+          '{core}',
+          'See you on {day} – {venue}, {clock}.',
+        ],
+      },
+      {
+        lines: [
+          'People with keyboards, artists and machines meet on {day} to {vt} {n}.',
+          '{claim}',
+          '{name}, {venue}, {date}. Let us {vt} {adj} {n} together!',
+        ],
+      },
+    ],
+    scheduletitle: ['Schedule', 'Running order (provisional, like everything)', 'What happens when', 'Schedule of the {adj} {n}'],
+    session: [
+      'Live prompting', 'Glitch reading', 'Open terminal', 'Haiku battle: human vs. machine', 'Slop vernissage',
+      'Context window karaoke', 'Merge conflict improv', 'Lightning talks on {n}', 'Collective reload', 'Manifesto reading',
+    ],
+    sessiondesc: [
+      '{adj:c} {n} {v} {place}.',
+      '{claim}',
+      'Please bring {adj} {n}.',
+      'We {vt} {n} until {n} {v}.',
+      '{place:c}, {adj} {n} {v}.',
+      'Rumor has it that {adj} {n} {v} there.',
+      'Duration: until {n} {v}.',
+    ],
+  },
 }

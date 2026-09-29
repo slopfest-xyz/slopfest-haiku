@@ -19,6 +19,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm pack # runs prepack → clean + build
+      - run: node scripts/readme.mjs --check
       - uses: actions/upload-artifact@v7
         with:
           name: package

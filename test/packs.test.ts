@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { de } from '../src/lang/de.js'
 import { en } from '../src/lang/en.js'
 import { THEMES } from '../src/themes.js'
-import { THEMED_SLOTS, type LangPack } from '../src/types.js'
+import { EVENT_VARS, THEMED_SLOTS, type LangPack } from '../src/types.js'
 
 const PACKS: LangPack[] = [de, en]
 const PLACEHOLDER = /\{([a-z]+)(?::([a-z]+))?(?:@[a-z0-9]+)?\}/g
@@ -14,6 +14,8 @@ function templates(pack: LangPack): string[] {
   for (const lex of Object.values(pack.themes)) for (const list of Object.values(lex)) out.push(...list)
   for (const variants of Object.values(pack.forms))
     for (const v of variants) out.push(...v.lines, ...(v.title ? [v.title] : []))
+  for (const pool of Object.values(pack.event))
+    for (const e of pool) out.push(...(typeof e === 'string' ? [e] : [...e.lines, ...(e.title ? [e.title] : [])]))
   return out
 }
 
@@ -29,8 +31,9 @@ describe.each(PACKS)('language pack $lang', (pack) => {
   it('only references existing slots and modifiers', () => {
     for (const t of templates(pack)) {
       for (const [, slot, mod] of t.matchAll(PLACEHOLDER)) {
-        expect(Object.keys(pack.common), `{${slot}} in "${t}"`).toContain(slot)
-        if (mod) expect(mod, `modifier in "${t}"`).toBe('w')
+        const known = [...Object.keys(pack.common), ...Object.keys(pack.event), ...EVENT_VARS]
+        expect(known, `{${slot}} in "${t}"`).toContain(slot)
+        if (mod) expect(['w', 'c'], `modifier in "${t}"`).toContain(mod)
       }
       expect(t.replace(PLACEHOLDER, ''), `stray brace in "${t}"`).not.toMatch(/[{}]/)
     }

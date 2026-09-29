@@ -1,11 +1,35 @@
+import { generateEvent, validateEvent } from './event.js'
 import { generate } from './generate.js'
-import { LANGS, type GenerateOptions, type Lang, type LangPack, type Poem } from './types.js'
+import {
+  LANGS,
+  type EventOptions,
+  type EventText,
+  type GenerateOptions,
+  type Lang,
+  type LangPack,
+  type Poem,
+} from './types.js'
 
 export { generate } from './generate.js'
+export { generateEvent, localize, validateEvent } from './event.js'
 export { FORMS, isForm, type Form } from './forms.js'
 export { THEMES, isTheme, type Theme } from './themes.js'
-export { LANGS } from './types.js'
-export type { GenerateOptions, Lang, LangPack, Poem, ThemeLexicon, Variant } from './types.js'
+export { EVENT_KINDS, LANGS } from './types.js'
+export type {
+  EventKind,
+  EventOptions,
+  EventText,
+  GenerateOptions,
+  Lang,
+  LangPack,
+  Localized,
+  Poem,
+  ScheduleEntry,
+  ScheduleItem,
+  SlopEvent,
+  ThemeLexicon,
+  Variant,
+} from './types.js'
 
 export interface SlopOptions extends GenerateOptions {
   /** Language, or `'auto'` (browser language, falls back to English). Default: `'auto'`. */
@@ -60,26 +84,59 @@ export async function slop(options: SlopOptions = {}): Promise<Poem> {
   return generate(pack, options)
 }
 
+export interface EventTextOptions extends EventOptions {
+  lang?: Lang | 'auto'
+}
+
+/** Generates an event page text (when/where, CTA, teaser, schedule), lazily loading the language pack. */
+export async function eventText(options: EventTextOptions): Promise<EventText> {
+  const pack = await loadLang(resolveLang(options.lang))
+  return generateEvent(pack, options)
+}
+
+function loop<T>(
+  options: { lang?: Lang | 'auto'; interval?: number; seed?: number },
+  make: (pack: LangPack, seed: number | undefined) => T,
+  onValue: (value: T) => void,
+): () => void {
+  let stopped = false
+  let timer: ReturnType<typeof setInterval> | undefined
+  let n = 0
+  const { interval = 10_000, seed } = options
+  loadLang(resolveLang(options.lang))
+    .then((pack) => {
+      if (stopped) return
+      const tick = () => onValue(make(pack, seed === undefined ? undefined : seed + n++))
+      tick()
+      if (interval > 0) timer = setInterval(tick, interval)
+    })
+    .catch((err: unknown) => console.error(err))
+  return () => {
+    stopped = true
+    if (timer !== undefined) clearInterval(timer)
+  }
+}
+
+const withSeed = <O extends object>(o: O, seed: number | undefined) => (seed === undefined ? o : { ...o, seed })
+
 /**
  * Calls `onPoem` immediately and then every `interval` ms with a fresh poem.
  * With a fixed `seed`, the sequence is reproducible (seed, seed+1, …).
  * Returns a function that stops the rotation.
  */
 export function rotate(options: RotateOptions, onPoem: (poem: Poem) => void): () => void {
-  let stopped = false
-  let timer: ReturnType<typeof setInterval> | undefined
-  let n = 0
-  const { interval = 10_000, seed, ...rest } = options
-  loadLang(resolveLang(options.lang)).then((pack) => {
-    if (stopped) return
-    const tick = () => onPoem(generate(pack, { ...rest, ...(seed === undefined ? {} : { seed: seed + n++ }) }))
-    tick()
-    if (interval > 0) timer = setInterval(tick, interval)
-  })
-  return () => {
-    stopped = true
-    if (timer !== undefined) clearInterval(timer)
-  }
+  const { interval: _i, seed: _s, ...rest } = options
+  return loop(options, (pack, seed) => generate(pack, withSeed(rest, seed)), onPoem)
+}
+
+/** Like `rotate`, for event texts. Validates the event immediately (throws if start/venue are missing). */
+export function rotateEvent(
+  options: EventTextOptions & { interval?: number },
+  onText: (text: EventText) => void,
+): () => void {
+  validateEvent(options.event)
+  const { interval: _i, seed: _s, ...rest } = options
+  return loop(options, (pack, seed) => generateEvent(pack, withSeed(rest, seed)), onText)
 }
 
 /** Replaces the children of `el` with the poem (title + one `div.slop-line` per line). Uses textContent only. */
@@ -101,6 +158,45 @@ export function renderPoem(el: Element, poem: Poem): void {
   el.replaceChildren(...nodes)
   el.setAttribute('data-form', poem.form)
   el.setAttribute('data-seed', String(poem.seed))
+}
+
+/**
+ * Renders an event text into `el`. CTA → `a.slop-cta` (or `span.slop-cta` without `ticketUrl`) + `div.slop-hint`;
+ * schedule → `div.slop-slot` rows with `span.slop-clock`, `span.slop-session`, `span.slop-desc`;
+ * otherwise `div.slop-line` per paragraph. Uses textContent only.
+ */
+export function renderEvent(el: Element, text: EventText): void {
+  const doc = el.ownerDocument
+  const node = (tag: string, className: string, content?: string) => {
+    const n = doc.createElement(tag)
+    n.className = className
+    if (content !== undefined) n.textContent = content
+    return n
+  }
+  const nodes: Node[] = []
+  if (text.title !== undefined) nodes.push(node('div', 'slop-title', text.title))
+  if (text.cta) {
+    const link = node(text.cta.href ? 'a' : 'span', 'slop-cta', text.cta.label)
+    if (text.cta.href) link.setAttribute('href', text.cta.href)
+    nodes.push(link, node('div', 'slop-hint', text.cta.hint))
+  } else if (text.schedule) {
+    for (const entry of text.schedule) {
+      const row = node('div', 'slop-slot')
+      row.append(
+        node('span', 'slop-clock', entry.clock),
+        ' ',
+        node('span', 'slop-session', entry.title),
+        ' ',
+        node('span', 'slop-desc', entry.text),
+      )
+      nodes.push(row)
+    }
+  } else {
+    for (const line of text.lines) nodes.push(node('div', 'slop-line', line))
+  }
+  el.replaceChildren(...nodes)
+  el.setAttribute('data-kind', text.kind)
+  el.setAttribute('data-seed', String(text.seed))
 }
 
 /** Renders into `el` and keeps rotating. Returns `stop()` and `next()` (render a new poem now). */

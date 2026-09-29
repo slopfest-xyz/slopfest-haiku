@@ -12,7 +12,7 @@ describe.each([de, en])('generate() in $lang', (pack) => {
       const poem = generate(pack, { form, seed })
       expect(poem.form).toBe(form)
       expect(poem.lines.length).toBeGreaterThan(0)
-      expect(poem.text, `seed ${seed}`).not.toMatch(/[{}]| [,.!?]| {2}/)
+      expect(poem.text, `seed ${seed}`).not.toMatch(/[{}]| [,.!?]| {2}|(?<!\.)\.\.(?!\.)/)
     }
   })
 

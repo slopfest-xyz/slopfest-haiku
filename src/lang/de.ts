@@ -652,4 +652,71 @@ export const de: LangPack = {
       { lines: ['revert: „{claim}“'] },
     ],
   },
+
+  // Event-Bausteine. {venue} steht nur ohne Präposition/Artikel (Doppelpunkt, Apposition),
+  // weil das grammatische Geschlecht des Ortsnamens unbekannt ist.
+  event: {
+    whenwhere: [
+      '{name}: {date}, {clock} Uhr – {venue}. {adj:c} {n} sind schon da.',
+      'Wann: {date}, ab {clock} Uhr. Wo: {venue}. Warum: {claim}',
+      'Merkt euch den {day}: Ab {clock} Uhr {v} {adj} {n}. Ort des Geschehens: {venue}.',
+      'Treffpunkt: {venue}, {address}. Zeitpunkt: {date}, {clock} Uhr. Mitbringen: {adj} {n}.',
+      '{name} passiert am {day} in {city}. Ab {clock} Uhr, {venue}. {core}',
+      'Von {clock} bis {until} Uhr {v} {adj} {n} – {venue}, {date}.',
+      '{date}. {venue}. {adj:c} {n}. Mehr muss man nicht wissen.',
+      'Am {day} verwandelt sich {venue} in einen Ort, an dem {n} {v}.',
+      '{name} am {day}, {venue}: {core}',
+      'Termin vormerken: {weekday}, {day}. Ort: {venue}. {claim}',
+    ],
+    cta: [
+      'Ticket sichern', 'Jetzt anmelden', 'Ich bin dabei', 'Platz reservieren', 'Ticket generieren',
+      'Teilnahme committen', 'Mich in den Kontext laden', 'Ja, ich will Slop', 'git checkout ticket',
+      'Einlass promptieren',
+    ],
+    ctahint: [
+      'Der Checkout läuft extern – und der ist garantiert nicht generiert.',
+      'Du verlässt kurz den Latent Space und landest im Ticketshop.',
+      'Weiter zum Ticketshop. Ein echter, kein halluzinierter.',
+      'Plätze sind endlich. Slop ist es nicht.',
+      '{date}, {venue}. Wir halten dir einen Platz im Kontextfenster frei.',
+      'Der Link führt zum externen Ticketshop – ganz ohne Prompt.',
+    ],
+    teaser: [
+      {
+        lines: [
+          '{name} ist ein Abend für alle, die {n} {vt}. {core}',
+          'Am {day} ab {clock} Uhr zeigen wir in {city}, was passiert, wenn {n} {v}. Eintritt frei für {adj} {n}, alle anderen brauchen ein Ticket.',
+        ],
+      },
+      {
+        lines: [
+          'Kein Vortrag, keine Keynote, kein Pitch. Stattdessen: {adj} {n}, {adj} {n} und {n}, die {place} {v}.',
+          '{core}',
+          'Wir sehen uns am {day} – {venue}, {clock} Uhr.',
+        ],
+      },
+      {
+        lines: [
+          'Menschen mit Tastaturen, Kunstschaffende und Maschinen treffen sich am {day}, um {n} zu {vt}.',
+          '{claim}',
+          '{name}, {venue}, {date}. {vt:c} wir gemeinsam {adj} {n}!',
+        ],
+      },
+    ],
+    scheduletitle: ['Programm', 'Ablauf (vorläufig, wie alles)', 'Was passiert wann', 'Zeitplan der {adj:w} {n}'],
+    session: [
+      'Live-Prompting', 'Glitch-Lesung', 'Offenes Terminal', 'Haiku-Battle: Mensch gegen Maschine',
+      'Slop-Vernissage', 'Kontextfenster-Karaoke', 'Merge-Konflikt-Improtheater', 'Lightning-Talks über {n}',
+      'Gemeinsames Neuladen', 'Manifest-Lesung',
+    ],
+    sessiondesc: [
+      '{adj:c} {n} {v} {place}.',
+      '{claim}',
+      'Bitte {adj} {n} mitbringen.',
+      'Wir {vt} {n}, bis {n} {v}.',
+      '{place:c} {v} {adj} {n}.',
+      'Gerüchten zufolge {v} dort {adj} {n}.',
+      'Dauer: bis {n} {v}.',
+    ],
+  },
 }
