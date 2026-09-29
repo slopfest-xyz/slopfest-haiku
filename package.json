@@ -1,6 +1,6 @@
 {
   "name": "@slopfest-xyz/slopfest-haiku",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generative Slopfest manifestos, haikus and litanies (DE/EN) – different on every reload.",
   "type": "module",
   "license": "MIT",
